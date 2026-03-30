@@ -4,9 +4,11 @@ namespace LifeFly.Settings
 {
     public class DatabaseSettings : IDatabaseSettings
     {
-        public string ConnectionString { get; set; }
-        public string DatabaseName { get; set; }
-        public string FlightCollectionName { get; set; }
+        public string ConnectionString { get; set; } // ConnectionString için eklenen özellik
+        public string DatabaseName { get; set; } // Database adı için eklenen özellik
+        public string FlightCollectionName { get; set; } // Flight koleksiyonu için eklenen özellik
+
+        public string BookingCollectionName { get; set; } // Booking koleksiyonu için eklenen özellik
 
     }
 }

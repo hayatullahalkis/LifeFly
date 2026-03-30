@@ -1,0 +1,81 @@
+﻿using LifeFly.Dtos.BookingDtos;
+using LifeFly.Entities;
+using LifeFly.Settings;
+using MongoDB.Driver;
+
+namespace LifeFly.Services.BookingServices
+{
+    public class BookingService : IBookingService
+    {
+      
+    private readonly IMongoCollection<Booking> _bookingCollection;
+        private readonly IMongoCollection<Flight> _flightCollection;
+
+        public BookingService(IDatabaseSettings databasesettings)
+        {
+            var client = new MongoClient(databasesettings.ConnectionString);
+            var database = client.GetDatabase(databasesettings.DatabaseName);
+
+            _bookingCollection = database.GetCollection<Booking>(databasesettings.FlightCollectionName);
+            _flightCollection = database.GetCollection<Flight>(databasesettings.FlightCollectionName);
+        }
+
+        public async Task CreateBookingAsync(CreateBookingDto dto)
+        {
+            // 🔥 1. Flight çek
+            var flight = await _flightCollection
+                .Find(x => x.FlightId == dto.FlightId)
+                .FirstOrDefaultAsync();
+
+            //if (flight == null)
+            //    throw new Exception("Uçuş bulunamadı");
+
+            // 🔥 2. Yolcu sayısı
+            var passengerCount = dto.Passengers.Count;
+
+            //// 🔥 3. Koltuk kontrol
+            //if (flight.AvailableSeats < passengerCount)
+            //    throw new Exception("Yeterli koltuk yok");
+
+            // 🔥 4. Passenger mapping
+            var passengers = dto.Passengers.Select(x => new Passenger
+            {
+                Name = x.Name,
+                Surname = x.Surname,
+                BirthDate = x.BirthDate,
+                Gender = x.Gender,
+                PassengerType = x.PassengerType
+            }).ToList();
+
+            // 🔥 5. Fiyat hesaplama
+            var totalPrice = passengerCount * flight.BasePrice;
+
+            // 🔥 6. Booking oluştur
+            var booking = new Booking
+            {
+                FlightId = dto.FlightId,
+                Passengers = passengers,
+
+                ContactName = dto.ContactName,
+                ContactEmail = dto.ContactEmail,
+                ContactPhone = dto.ContactPhone,
+
+                TotalPrice = totalPrice,
+                BookingDate = DateTime.Now,
+                Status = "Confirmed"
+            };
+
+            await _bookingCollection.InsertOneAsync(booking);
+
+            //// 🔥 7. Koltuk düş
+            //var update = Builders<Flight>.Update
+            //    .Inc(x => x.AvailableSeats, -passengerCount);
+
+            //await _flightCollection.UpdateOneAsync(
+            //    x => x.FlightId == dto.FlightId,
+            //    update
+            //);
+        }
+    }
+}
+

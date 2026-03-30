@@ -1095,6 +1095,17 @@
                                                 <i class="bi bi-eye-fill"></i>
                                                 <span class="act-label">Görüntüle</span>
                                             </a>
+
+                                            <a asp-area="Admin"
+                                               asp-controller="Booking"
+                                               asp-action="CreateBooking"
+                                               asp-route-id="@f.FlightId"
+                                               class="act act-book">
+                                                <i class="bi bi-ticket-perforated-fill"></i>
+                                                <span class="act-label">Rezerve Et</span>
+                                            </a>
+
+
                                             <a asp-area="Admin"
                                                asp-controller="Flights"
                                                asp-action="Edit"
