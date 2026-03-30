@@ -1,18 +1,37 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LifeFly.Dtos.FlightDtos;
+using LifeFly.Services.FlightSevices;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LifeFly.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class FlightsListController : Controller
     {
-        [Area("Admin")]
-        public IActionResult FlightList()
+        private readonly IFlightService _flightService;
+
+        public FlightsListController(IFlightService flightService)
+        {
+            _flightService = flightService;
+        }
+
+        public async Task<IActionResult> FlightList()
+        {
+            var values = await _flightService.GetAllFlightsAsync();
+            return View(values);
+        }
+
+        [HttpGet]
+        public IActionResult CreateFligth()
         {
             return View();
         }
 
-        public IActionResult CreateFligth()
+        [HttpPost]
+        public async Task<IActionResult> CreateFligth(CreateFlightDto createFlightDto)
         {
-            return View();
+            await _flightService.CreateFlightAsync(createFlightDto);
+            return RedirectToAction("FlightList");
+
         }
     }
 }

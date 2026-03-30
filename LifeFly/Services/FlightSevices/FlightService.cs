@@ -10,10 +10,10 @@ namespace LifeFly.Services.FlightSevices
     {
         private readonly IMapper _mapper;
         private readonly IMongoCollection <Flight>  _flightCollection;
-
         public FlightService(IMapper mapper,IDatabaseSettings _databaseSettings)
-        { var clienat= new MongoClient(_databaseSettings.ConnectionString);
-            var database = clienat.GetDatabase(_databaseSettings.DatabaseName);
+        { 
+            var client= new MongoClient(_databaseSettings.ConnectionString);
+            var database = client.GetDatabase(_databaseSettings.DatabaseName);
             _flightCollection = database.GetCollection<Flight>(_databaseSettings.FlightCollectionName);
             _mapper = mapper;
         }
@@ -37,7 +37,7 @@ namespace LifeFly.Services.FlightSevices
 
         public async Task<GetFlightByIdDto> GetFlightByIdAsync(string flightId)
         {
-            var value = _flightCollection.Find(x => x.FlightId == flightId).FirstOrDefault();
+            var value = await _flightCollection.Find(x => x.FlightId == flightId).FirstOrDefaultAsync();
             return _mapper.Map<GetFlightByIdDto>(value);
         }
 
