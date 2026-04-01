@@ -16,7 +16,7 @@ namespace LifeFly.Services.BookingServices
             var client = new MongoClient(databasesettings.ConnectionString);
             var database = client.GetDatabase(databasesettings.DatabaseName);
 
-            _bookingCollection = database.GetCollection<Booking>(databasesettings.FlightCollectionName);
+            _bookingCollection = database.GetCollection<Booking>(databasesettings.BookingCollectionName);
             _flightCollection = database.GetCollection<Flight>(databasesettings.FlightCollectionName);
         }
 
