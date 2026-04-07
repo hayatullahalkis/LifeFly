@@ -1,4 +1,5 @@
 ﻿using LifeFly.Dtos.FlightDtos;
+using LifeFly.Dtos.PassengerDtos;
 
 namespace LifeFly.Services.FlightSevices
 {
@@ -13,6 +14,8 @@ namespace LifeFly.Services.FlightSevices
         Task DeleteFlightAsync(string flightId); // id'ye göre uçuş siler
 
         Task UpdateFlightAsync(string flightId, UpdateFlightDto updateFlightDto); // id'ye göre uçuş günceller
+
+        Task<List<PassgenerListItemDto>> GetFlightDetailsWithPassengers(string id);
 
     }
 }
